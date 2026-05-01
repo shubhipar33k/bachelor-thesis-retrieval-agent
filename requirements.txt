@@ -1,0 +1,24 @@
+# Core agent framework
+smolagents[litellm]
+ 
+# LLM API access
+anthropic
+openai
+litellm
+ 
+# Retrieval
+rank-bm25
+faiss-cpu
+sentence-transformers
+ 
+# PDF processing
+pymupdf
+ 
+# Data handling
+pandas
+numpy
+ 
+# Utilities
+
+tqdm
+python-dotenv

@@ -1,0 +1,109 @@
+# Human Scoring Rubric — Benchmark Evaluation
+# Thesis: Evaluating Retrieval Decisions in Multi-Step LLM Agents
+# Scorer: Shubhi Pareek
+
+═══════════════════════════════════════════════════════
+METRIC 1: RETRIEVAL DECISION (per task, per condition)
+═══════════════════════════════════════════════════════
+
+Gold label: retrieval_required = yes / no
+
+Score the agent's decision:
+  2 = Correct decision (retrieved when needed, did not retrieve when not needed)
+  1 = Partial (retrieved when not needed but result was ignored; or retrieved when
+      needed but with wrong tool)
+  0 = Wrong decision (did not retrieve when needed; OR retrieved when clearly
+      instructed not to, and used it in the answer)
+
+Record also:
+  - tool_used: bm25 / faiss / none
+  - tool_correct: yes / no / na  (compare to best_tool column)
+  - num_retrieval_calls: integer
+
+═══════════════════════════════════════════════════════
+METRIC 2: ANSWER CORRECTNESS (per task, per condition)
+═══════════════════════════════════════════════════════
+
+Compare agent answer to gold_answer in CSV.
+
+Score:
+  2 = Fully correct. All key facts present, no contradictions.
+  1 = Partially correct. Some key facts present but missing important conditions
+      or exceptions, or minor factual error.
+  0 = Incorrect. Wrong facts, hallucinated rules, or missing the core answer.
+
+Notes column: note which specific fact was wrong or missing.
+
+═══════════════════════════════════════════════════════
+METRIC 3: GROUNDING (per task, retrieval-required tasks only)
+═══════════════════════════════════════════════════════
+
+Is the answer supported by the retrieved chunk(s)?
+
+Score:
+  2 = Answer is clearly grounded in retrieved content. Key claims traceable.
+  1 = Partially grounded. Some claims supported, others appear from model memory.
+  0 = Not grounded. Answer contradicts or ignores retrieved content, or answer
+      is from model memory with no retrieval support.
+  NA = Task is retrieval_required=no, grounding not applicable.
+
+═══════════════════════════════════════════════════════
+METRIC 4: HALLUCINATION FLAG (per task)
+═══════════════════════════════════════════════════════
+
+Binary flag: 1 = hallucination present, 0 = no hallucination
+
+Hallucination = a specific factual claim (number, rule, deadline, policy) that:
+  - is not in the retrieved chunks, AND
+  - is not in the provided excerpt (for retrieval-unnecessary tasks), AND
+  - cannot be verified from any corpus document
+
+Do NOT flag as hallucination:
+  - Vague hedging ("this may vary")
+  - Correct facts recalled from model memory when retrieval was appropriate
+
+═══════════════════════════════════════════════════════
+SCORING SHEET COLUMNS (one row per task per condition)
+═══════════════════════════════════════════════════════
+
+task_id | condition | retrieval_decision_score | tool_used | tool_correct |
+num_calls | correctness_score | grounding_score | hallucination_flag | notes
+
+CONDITIONS:
+  A = No-RAG
+  B = RAG-optional
+  C = RAG-forced (BM25)
+
+═══════════════════════════════════════════════════════
+AGGREGATE METRICS (computed from scores after all runs)
+═══════════════════════════════════════════════════════
+
+Per condition:
+  - Retrieval Decision Accuracy = % of tasks with retrieval_decision_score = 2
+  - Retrieval Precision = TP / (TP + FP)
+    TP = retrieved when needed; FP = retrieved when not needed
+  - Retrieval Recall = TP / (TP + FN)
+    FN = did not retrieve when needed
+  - Mean Correctness Score (0-2 scale)
+  - Hallucination Rate = % tasks with hallucination_flag = 1
+  - Mean Grounding Score (retrieval tasks only)
+
+Cross-condition comparison:
+  - Does RAG-optional outperform No-RAG on correctness?
+  - Does RAG-optional outperform RAG-forced on unnecessary retrieval tasks?
+  - Which tool (BM25/FAISS) leads to better grounding when used correctly?
+
+═══════════════════════════════════════════════════════
+FAILURE PATTERN TAXONOMY (for error analysis section)
+═══════════════════════════════════════════════════════
+
+Label each 0-score retrieval decision with one failure type:
+
+  FR1 = False Retrieval: agent retrieved when not needed, and it hurt the answer
+  FR2 = False Retrieval (neutral): agent retrieved when not needed, but ignored it
+  MR1 = Missed Retrieval: agent did not retrieve when needed
+  WT1 = Wrong Tool: retrieved with wrong tool (e.g. BM25 on paraphrase question)
+  SD1 = Semantic Distraction: FAISS retrieved related but wrong chunk, misled agent
+  EM1 = Exact Match Failure: BM25 missed answer due to wording difference
+
+Target: identify 4-6 major failure patterns across conditions for discussion chapter.

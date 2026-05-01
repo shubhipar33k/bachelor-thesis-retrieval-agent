@@ -1,0 +1,27 @@
+# Environment
+.env
+.env.*
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Large index files — rebuild from corpus instead
+data/bm25_index.pkl
+data/faiss_index.pkl
+
+# Sentence transformer cache
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Logs are tracked (they are your results)
+# corpus PDFs are tracked (they are your data)
