@@ -1,0 +1,256 @@
+task_id,condition,group,retrieval_required,retrieval_used,tools_used,num_retrieval_calls,judge_correctness,judge_hallucination,judge_grounding,judge_correctness_reason,judge_hallucination_reason,answer_preview
+T01,no_rag,A_retrieval_necessary,yes,False,[],0,0,1,0,"The agent states the thesis is worth 12 ECTS credits when the gold answer clearly indicates it is 15 ECTS credits, making this a core factual error.",The claim of 12 ECTS credits directly contradicts the gold answer's specification of 15 ECTS credits.,The bachelor thesis in the CL major is worth 12 ECTS credits and is graded. It is a compulsory module that concludes your studies and must be completed as part of the degree requirements.
+T02,no_rag,A_retrieval_necessary,yes,False,[],0,0,0,0,"The agent refuses to answer and provides no information about the consequence (module counted as failed), making it completely incorrect despite the question having a clear answer in the gold standard.","None detected - the agent makes no specific factual claims, only acknowledges inability to answer and provides generic recommendations.","I apologize, but I'm unable to retrieve the relevant documents at this moment. Based on the available tools and information, I cannot provide you with a definitive answer about what happens if a stude"
+T03,no_rag,A_retrieval_necessary,yes,False,[],0,1,1,0,"The agent correctly identifies that disclosure is required and use without disclosure is plagiarism, but incorrectly adds a blanket requirement for explicit permission from supervisors that is not present in the gold answer, and misses key distinctions like direct citation requirements and the corrective use exception.","The agent introduces a specific requirement that 'explicit permission from the supervising professor or instructor' is needed, and repeats this claim multiple times, which directly contradicts the gold answer's guideline-based approach that allows use if proper citation and disclosure rules are followed.","Based on the available documents, the CL bachelor program has specific rules for using text generation models (such as ChatGPT, Claude, etc.) in student work:
+
+**General Rule:**
+Text generation models"
+T04,no_rag,A_retrieval_necessary,yes,False,[],0,1,0,0,"The agent provides a generic definition of plagiarism that overlaps with the gold answer (e.g., copying text without attribution, self-plagiarism) but misses the specific five-form classification system and the three manifestations (quote, variation, paraphrase) that are key to the CL department's definition.",None detected - the agent's general statements about plagiarism are standard academic definitions and it explicitly acknowledges it cannot access the specific CL department documents.,"I need to retrieve the official CL department documents on plagiarism to give you an accurate answer. However, I don't have access to a retrieval function that's been initialized in this context.
+
+Bas"
+T05,no_rag,A_retrieval_necessary,yes,False,[],0,0,0,0,"The agent incorrectly claims the information is not available and fails to provide the actual solution (withdrawal request process), missing all key facts from the gold answer.","None detected - the agent appropriately suggests contacting administration when it believes information is unavailable, without inventing specific procedures.","The available documents do not contain specific information about what to do if two exams are scheduled at the same time. To get an answer to this question, I recommend contacting the Student Administ"
+T06,no_rag,A_retrieval_necessary,yes,False,[],0,1,0,1,"The agent captures the general withdrawal procedure and mentions submitting medical documentation, but misses critical specific details: the requirement to immediately notify the department first, the precise five working day deadline, and the specific portal method ('My requests and invoices').","None detected - the agent's claims about medical certificates and timing are generally consistent with withdrawal procedures, though less specific than the gold answer.","Based on the document, here is how a student can withdraw from an assessment due to illness:
+
+**Procedure:**
+- The student must submit a medical certificate (Arztzeugnis) to the responsible office
+- T"
+T07,no_rag,A_retrieval_necessary,yes,False,[],0,0,0,0,"The agent refuses to answer and claims insufficient information, but the gold answer provides a clear, definitive answer that Wahlmodule cannot be repeated.","None detected - the agent makes no specific factual claims, only states it lacks information.","Based on the available documents, I do not have sufficient information to provide a clear answer to your question about whether a student can repeat a failed elective module (Wahlmodul) in the CL bach"
+T08,no_rag,A_retrieval_necessary,yes,False,[],0,0,0,0,"The agent does not provide any answer to the question, only states that it needs to search for information, which means it fails to answer the core question about the 18 ECTS minimum requirement.","None detected - the agent makes no specific factual claims, only acknowledges the need to retrieve information.",I need to retrieve the official study program documentation to find the specific minimum ECTS requirements for the Informatik module group in the CL bachelor major (120 ECTS). Let me search for this i
+T09,no_rag,B_retrieval_unnecessary,no,False,[],0,1,0,NA,"The agent includes most key facts (15 ECTS, graded, Dec 1/June 1 deadlines, missing deadline = failed) but omits the important requirement to agree on the topic before booking.",None detected,"**Bachelor Thesis Deadline — Simple Explanation**
+
+Your bachelor thesis must be submitted by:
+- **December 1st** if you're doing it in the fall semester (HS), OR
+- **June 1st** if you're doing it in t"
+T10,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent correctly extracted the minimum ECTS requirements for each module group, presenting them in the requested bullet list format with accurate values.",None detected,"Based on the provided text, here are the minimum ECTS requirements per module group:
+
+• **Einführung in die Computerlinguistik**: sämtliche Pflichtmodule (all mandatory modules)
+• **Wissenschaftliche "
+T11,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The answer correctly converts all 5 types of plagiarism into a student-friendly checklist format, maintaining the core concepts from the gold answer requirement.",None detected,"## Plagiarism Checklist for Students
+
+**Before submitting your work, make sure:**
+
+☐ **Full text plagiarism** — I have not submitted an entire text under my own name
+
+☐ **Partial plagiarism** — All te"
+T12,no_rag,C_ambiguous,yes,False,[],0,0,1,0,The agent's answer is completely incorrect; it states citation/disclosure is required when the gold answer explicitly says no reference is needed for corrective use like grammar fixing.,The agent fabricates a requirement for disclosure statements and procedures that directly contradicts the gold answer's explicit exemption for corrective editing use.,"Based on the UZH Computational Linguistics program rules on text generation models:
+
+**Yes, the student needs to document this use of ChatGPT**, even though they wrote the content themselves.
+
+The rul"
+T13,no_rag,C_ambiguous,yes,False,[],0,1,1,1,"The agent correctly identifies that the late submission will not be accepted and the exam will count as failed, but states the wrong deadline (3 working days instead of 5 working days).",The agent claims the deadline is 3 working days when the gold answer specifies it is 5 working days.,"Based on the CL bachelor program regulations, a doctor's certificate submitted 8 days after an exam would likely **not be accepted**. 
+
+According to the study guidelines, a doctor's certificate must b"
+T14,no_rag,C_ambiguous,yes,False,[],0,0,0,0,"The agent refused to answer and only stated it needs to retrieve information, providing no substantive answer to whether completed modules would be lost.",None detected,I need to retrieve the official regulations about switching from the CL major to the CL minor to answer this question accurately. Let me look up the relevant policy documents.
+T15,no_rag,D_adversarial,no,False,[],0,2,0,NA,"The agent's answer is fully correct, stating that the bachelor thesis is graded (benotet), which matches the gold answer exactly.",None detected,"Yes, the bachelor thesis is graded (benotet)."
+N16,no_rag,D_adversarial,no,False,[],0,2,0,NA,"The agent provides both deadlines (1 December for autumn, 1 June for spring) accurately, which are the key facts from the gold answer.",None detected,The bachelor thesis must be submitted to your supervisor by 1 December in the autumn semester or by 1 June in the spring semester at the latest.
+N17,no_rag,D_adversarial,no,False,[],0,2,0,NA,"The agent's answer correctly conveys both key facts: booking equals binding registration for the exam, and not showing up without deregistering results in an automatic fail (grade 1 or 'nicht bestanden'), with no extra rules added.",None detected,"**Simple version for a first-year student:**
+
+When you book a module, you're officially saying you will take it and do the exam or assessment. If you don't show up for the exam and don't withdraw befo"
+N18,no_rag,D_adversarial,no,False,[],0,2,0,NA,"The agent correctly identifies all three ECTS-related values mentioned in the gold answer: 18 ECTS for Kernbereich, 60 ECTS total, and 30% graded requirement.",None detected,"Based on the provided text, the ECTS values mentioned are:
+
+• 18 ECTS Credits (Kernbereich Computerlinguistik und Sprachtechnologie minimum requirement)
+• 60 ECTS Credits (overall minimum requirement "
+N19,no_rag,D_adversarial,no,False,[],0,2,0,NA,The agent correctly answers 'Yes' and accurately explains that missing the deadline results in the module being considered 'not passed' which is a failed attempt.,None detected,"Yes. According to the text, if you cannot meet the submission deadline for your bachelor thesis, the module is considered ""not passed"" (failed attempt / ""Fehlversuch"")."
+N20,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,The agent correctly identifies both key requirements: agreeing on the thesis topic with the supervisor and obtaining supervisor approval/confirmation before booking the module.,None detected,"Before booking the bachelor thesis module, a student should:
+
+1. Agree on the thesis topic with the supervisor (Betreuerin/Betreuer)
+2. Obtain confirmation/agreement from the supervisor
+
+The passage e"
+N21,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,The agent's answer fully captures both required elements: (1) plagiarism as reproduction without attribution and (2) format irrelevance of the original source.,None detected,"• A plagiarism is the reproduction of a text passage without indicating its source.
+
+• It is irrelevant whether the original text is published in print or online."
+N22,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent correctly states that grammar correction does not require citation and provides supporting detail about corrective editing, which aligns with the gold answer.",None detected,"No. According to the provided text, if text generation models are used merely for corrective editing—such as fixing grammatical errors or improving idiomaticity of text written by the student—no refer"
+N23,no_rag,B_retrieval_unnecessary,no,False,[],0,1,1,NA,"The agent captures the core requirements (book on time, use official tool, registration elsewhere invalid) but adds an unsupported third step about 'confirming validity' that changes the emphasis from the gold answer's clear statement that other registrations are invalid.","Step 3 'Confirm validity – Ensure your booking is valid; if not completed correctly, your performance will not be credited' introduces a specific claim about performance not being credited that is not present in the gold answer and appears to be fabricated detail.","**Module Booking Checklist**
+
+1. **Book modules on time** – Register all modules within the specified deadlines in the student portal (Studierendenportal)
+
+2. **Use the official booking tool** – Alway"
+N24,no_rag,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent provided exactly 8 module names in a clean list format without adding ECTS values, descriptions, or extraneous modules, which fully matches the gold answer's requirement.",None detected,"Programming in Language Technology 1
+Programming in Language Technology 2
+Introduction to Language Technology
+Machine Learning for Language Technology
+Math. Foundations for Language Technology 1
+Intro"
+N25,no_rag,D_adversarial,no,False,[],0,2,0,NA,The agent's answer contains all key facts from the gold answer: passed compulsory modules cannot be repeated and failing an elective module has no consequences.,None detected,"Compulsory modules that have been passed cannot be repeated to improve the grade, while failed elective modules have no further consequences."
+T01,rag_opt,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent correctly states all key facts from the gold answer: 15 ECTS credits, graded (benotet), and it is a compulsory module (Pflichtmodul).",None detected,"The bachelor thesis in the CL major is worth **15 ECTS credits** and is **graded (benotet)**.
+
+According to the official program regulations, the Bachelorarbeit (bachelor thesis) is a mandatory module"
+T02,rag_opt,A_retrieval_necessary,yes,True,['bm25_search'],2,2,0,2,"The agent correctly states that missing the deadline results in the module being marked as 'nicht bestanden' (failed attempt/Fehlversuch) and accurately provides both deadlines (December 1 for HS, June 1 for FS).","None detected. All specific claims about the consequences and deadlines align with the gold answer, and the additional procedural information about extensions appears to be reasonable supplementary guidance rather than contradictory fabrication.","If a student misses the submission deadline for the bachelor thesis, **the module is marked as ""not passed"" (Fehlversuch — a failed attempt)**.
+
+According to the CL Institute guidelines, the bachelor "
+T03,rag_opt,A_retrieval_necessary,yes,True,"['bm25_search', 'faiss_search']",3,2,0,2,"The agent's answer is fully correct, covering all key facts from the gold answer: use is allowed with guidelines, undeclared use is plagiarism, direct use must be cited, corrective use requires no citation, and students take full responsibility for generated content.","None detected - all specific claims about disclosure, citation requirements, corrective use, responsibility, and special exceptions are consistent with standard academic guidelines for text generation use.","Yes, CL bachelor students may use text generation models in a thesis, but only under specific conditions set out in the Department of Computational Linguistics guidelines:
+
+**Core Permission:**
+The De"
+T04,rag_opt,A_retrieval_necessary,yes,True,"['bm25_search', 'faiss_search']",2,2,0,2,"The agent's answer includes all key facts from the gold answer: the definition of plagiarism, all five forms with their German names, and the three forms of reproduction (quote, variation, paraphrase), plus additional relevant context about text generation models.",None detected - all specific claims align with the gold answer and the additional information about text generation models is a reasonable extension of the plagiarism policy.,"According to the CL Department documents, **plagiarism** is defined as the reproduction of a text portion without source attribution, regardless of whether the original text is published in print or o"
+T05,rag_opt,A_retrieval_necessary,yes,True,"['bm25_search', 'faiss_search']",2,2,0,2,"The agent's answer contains all key facts from the gold answer: submitting a withdrawal request in the student portal under 'My requests and Invoices', providing supporting documents like screenshots, and that if approved the first exam doesn't count as a failed attempt and the student may register for a repeat exam.","None detected - all specific claims about the withdrawal process, portal location, supporting documents, and consequences are consistent with the gold answer, and additional procedural details about repeat exam registration and prevention tips are reasonable contextual additions that don't contradict the gold answer.","If two of your exams are scheduled at the same time, here's what you can do:
+
+**Submit a withdrawal request for one module:**
+You can cancel one of the modules **outside the deadline** by submitting a"
+T06,rag_opt,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent's answer includes all key facts from the gold answer: immediate notification requirement, five working day deadline, submission via student portal, and need for supporting documents like a doctor's certificate.",None detected,"To withdraw from an assessment due to illness, here is the process and deadline:
+
+**Steps to withdraw:**
+1. **Immediately notify** the responsible office at your department or the proctor if you need "
+T07,rag_opt,A_retrieval_necessary,yes,True,"['bm25_search', 'faiss_search']",2,2,0,2,"The agent correctly states that elective modules cannot be repeated and accurately distinguishes them from Pflicht- and Wahlpflichtmodule, covering all key facts from the gold answer.",None detected - the claims about failed electives appearing on transcripts but not final documents are reasonable procedural details that don't contradict the gold answer.,"No, a student cannot repeat a failed elective module (Wahlmodul).
+
+According to the official regulations:
+
+**""Elective modules cannot be repeated.""**
+
+This is a clear distinction from compulsory (Pfli"
+T08,rag_opt,A_retrieval_necessary,yes,True,['bm25_search'],2,2,0,2,The agent correctly states the minimum 18 ECTS requirement and accurately specifies these can be from Wahlpflicht (WP) or Wahl (W) modules in the Informatik group.,None detected - all claims align with the gold answer and appear document-grounded.,"The minimum ECTS requirement in the Informatik (Computer Science) module group for the CL bachelor major (120) is **18 ECTS Credits**.
+
+According to the official study plan (Studienordnung) for the Ba"
+T09,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"All key facts from the gold answer are present: 15 ECTS, graded, agree topic before booking, Dec 1 (HS)/June 1 (FS) deadlines, and missing deadline = failed.",None detected,"**Bachelor Thesis Deadline — Simple Version:**
+
+Your bachelor thesis is worth 15 credits and will be graded.
+
+You have two submission deadlines depending on the semester:
+- **December 1st** if you're "
+T10,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent correctly extracted all minimum ECTS requirements per module group from the text, presenting them in a clear bullet list format as requested.",None detected,"Based on the provided text, here are the minimum ECTS requirements per module group:
+
+• **Einführung in die Computerlinguistik:** sämtliche Pflichtmodule (all mandatory modules)
+• **Wissenschaftliche "
+T11,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent's answer covers all 5 types of plagiarism in student-friendly checklist format, accurately reflecting the definitions without adding extraneous rules.",None detected,"**Plagiarism Checklist for Students**
+
+☐ **Full Plagiarism (Vollplagiat):** Am I submitting an entire text under my own name without attribution?
+
+☐ **Partial Plagiarism (Teilplagiat):** Am I using te"
+T12,rag_opt,C_ambiguous,yes,True,['bm25_search'],2,2,0,2,The answer correctly states no citation is needed for corrective grammar use and provides the exact relevant quote from the guidelines.,"None detected - the additional context about plagiarism and substantive content generation represents reasonable, cautionary information that doesn't contradict the gold answer.","No, the student does not need to cite ChatGPT in this case.
+
+According to the Department of Computational Linguistics guidelines on the use of text generation models:
+
+**""If text generation models are"
+T13,rag_opt,C_ambiguous,yes,True,"['bm25_search', 'faiss_search']",2,2,0,2,"The agent correctly identifies that the request will likely be rejected due to the 5-working-day deadline being exceeded, and correctly states the exam will be treated as failed, matching all key facts from the gold answer.","None detected. All specific claims about the 5-working-day deadline, rejection consequences, and procedural requirements align with the gold answer and are appropriately qualified with 'likely' rather than absolute statements.","Based on the university regulations, the student's request for withdrawal will **very likely be rejected**.
+
+Here's why:
+
+**The key rule:** A student who misses an exam due to illness must submit a wi"
+T14,rag_opt,C_ambiguous,yes,True,"['bm25_search', 'faiss_search']",6,1,0,2,"The agent correctly identifies that CL major and minor cannot be combined and provides direct citations from documents, but fails to directly answer the student's specific question about whether completed compulsory modules would be lost in a hypothetical switch.",None detected,"**No, the student cannot switch from the CL Major (120) to the CL Minor (60).**
+
+According to the official study regulations, **the CL Major and CL Minor programs are incompatible and cannot be combin"
+T15,rag_opt,D_adversarial,no,False,[],0,2,0,NA,"The agent correctly states that the bachelor thesis is graded ('benotet'), which fully matches the gold answer's core fact.",None detected,"Ja, die Bachelorarbeit ist benotet."
+N16,rag_opt,D_adversarial,no,False,[],0,2,0,NA,The agent's answer correctly states both deadlines (December 1st for autumn semester and June 1st for spring semester) with all key facts from the gold answer present.,None detected,The bachelor thesis must be submitted to your supervisor by December 1st in the autumn semester or by June 1st in the spring semester at the latest.
+N17,rag_opt,D_adversarial,no,False,[],0,2,0,NA,"The agent's answer fully captures both key facts from the gold answer: booking creates a binding registration for the exam, and not showing up without deregistering results in an automatic fail with grade 1 or 'nicht bestanden'.",None detected,"**Simpler version:**
+
+When you book a module, you're saying yes to taking it and doing the exam or assignment for it. If you don't show up for the exam or assignment and don't officially cancel before"
+N18,rag_opt,D_adversarial,no,False,[],0,2,0,NA,"All key ECTS values from the gold answer are present (18 ECTS for Kernbereich, 60 ECTS total, 30% graded) with appropriate context and no factual errors.","None detected - all values (18 ECTS, 60 ECTS, 30%) match the gold answer and no invented numbers are present.","Based on the provided text, here are all ECTS values mentioned:
+
+• 18 ECTS Credits (minimum for Kernbereich Computerlinguistik und Sprachtechnologie)
+• 60 ECTS Credits (total minimum for Minor 60)
+• 3"
+N19,rag_opt,D_adversarial,no,False,[],0,2,0,NA,"The agent correctly answers 'Yes' and accurately explains that missing the deadline results in a failed attempt, fully aligning with the gold answer.",None detected,"Yes. According to the provided text, if you cannot meet the submission deadline for your bachelor thesis, the module is considered ""not passed"" (failed attempt / Fehlversuch)."
+N20,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,The agent correctly identifies both key requirements: agreeing on the thesis topic with the supervisor and obtaining explicit supervisor approval before booking the module.,None detected,"Before booking the bachelor thesis module, a student should:
+
+1. **Agree on the thesis topic** with the supervisor (Betreuerin/Betreuer)
+2. **Obtain confirmation/approval** from the supervisor
+
+The pa"
+N21,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent's answer fully captures both key facts from the gold answer: (1) plagiarism as reproducing text without attribution/source indication, and (2) the irrelevance of the original format (print or online).",None detected,"• A plagiarism is generally understood as reproducing a part of a text without indicating its source.
+
+• It is irrelevant what form the original text takes—whether published in print or on the interne"
+N22,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,The agent correctly states that grammar correction does not require citation and provides the key reasoning that it's considered corrective editing.,None detected,"No, grammar correction with a text generation model does not require citation. According to the policy: ""If text generation models are merely used correctively in editing, e.g. to fix grammatical erro"
+N23,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"All three key points from the gold answer are present: booking modules on time in the student portal, using the official booking tool within deadlines, and that registration with lecturers or OLAT is not valid.",None detected,"**Module Booking Checklist**
+
+1. **Book your modules on time** – Use the student portal (Studierendenportal) and book within the specified deadlines, otherwise your performance will not be credited.
+
+"
+N24,rag_opt,B_retrieval_unnecessary,no,False,[],0,2,0,NA,"The agent correctly extracted exactly 8 module names in a clean list format without adding ECTS values, descriptions, or extraneous information.",None detected,"Programming in Language Technology 1
+Programming in Language Technology 2
+Introduction to Language Technology
+Machine Learning for Language Technology
+Math. Foundations for Language Technology 1
+Intro"
+N25,rag_opt,D_adversarial,no,False,[],0,2,0,NA,The agent's answer captures all key facts from the gold answer: passed compulsory modules cannot be repeated and failing elective modules has no consequences.,None detected,"Compulsory modules that have been passed cannot be repeated to improve the grade, while failed elective modules have no further consequences."
+T01,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],2,2,0,2,"The agent correctly states all key facts: 15 ECTS credits, graded status, and identifies it as a mandatory/compulsory module.","None detected. The specific claims about ECTS credits, grading requirement, and the 30% grading threshold are reasonable and consistent with typical study regulations.","The bachelor thesis (Bachelorarbeit) in the CL major is worth **15 ECTS credits** and **is graded**.
+
+According to the study regulations for the Computational Linguistics and Language Technology Bache"
+T02,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],2,2,0,2,"The agent correctly states that missing the deadline results in the thesis being counted as failed (nicht bestanden), which matches the gold answer's core fact.","None detected - all specific claims about failure, repeat options, and consequences are reasonable extensions of the core rule without contradicting the gold answer.","According to the official regulations, if a student misses the submission deadline for the bachelor thesis, **the thesis is considered failed** (nicht bestanden).
+
+The key rule is: ""Sie müssen die Abg"
+T03,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent's answer fully captures all key facts from the gold answer: use is allowed with guidelines, undeclared use is plagiarism, direct use must be cited, corrective use needs no citation, and students take full responsibility for generated content.","None detected - all specific claims about citation requirements, plagiarism, corrective use, and student responsibility align with the gold answer and appear well-grounded in policy documents.","Yes, CL bachelor students can use text generation models in a thesis, but only under specific conditions:
+
+**Basic Permission:**
+The Department of Computational Linguistics allows the use of automatic"
+T04,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent's answer fully captures all key facts from the gold answer: the definition of plagiarism as reproduction without attribution, all five forms (Vollplagiat, Teilplagiat, Verdecktes Plagiat, Selbstplagiat, Übersetzungsplagiat) with accurate descriptions, and even adds relevant context about AI-generated text.","None detected - all claims about plagiarism forms, definitions, and the AI-generated text policy are consistent with what would be expected in CL department documents and do not contradict the gold answer.","According to the CL department documents, plagiarism is defined as **the reproduction of a text section without source attribution**.
+
+**Key Definition:**
+Plagiarism is the presentation of text from a"
+T05,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent's answer fully covers all key facts from the gold answer: canceling one module outside the normal deadline, submitting a withdrawal request in the student portal under 'My requests and Invoices', providing supporting documents (screenshot of course catalogue with exam dates), and that if approved, the first exam does not count as a failed attempt and the student may register for a repeat exam.",None detected,"If two of your exams are scheduled at the same time, you can **withdraw from one of the modules outside the deadline**. Here's how:
+
+**Step 1: Submit a withdrawal request**
+- Go to the student portal "
+T06,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent's answer includes all key facts from the gold answer: immediate notification requirement, five working day deadline after assessment, submission via student portal under 'My requests and invoices', and requirement for supporting documents like a doctor's certificate.","None detected. All specific claims about procedures, deadlines, and requirements are consistent with the gold answer, and additional details about notifications and alternative options for extended assessments are reasonable procedural information that does not contradict the core facts.","To withdraw from an assessment due to illness, follow these steps:
+
+**How to withdraw:**
+1. **Immediate notification:** If you are unable to complete an assessment due to illness, you must immediately"
+T07,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],1,2,0,2,"The agent correctly states that elective modules cannot be repeated and accurately distinguishes them from Pflichtmodule and Wahlpflichtmodule, covering all key facts from the gold answer.",None detected,"No, a student cannot repeat a failed elective module (Wahlmodul).
+
+According to the Faculty of Arts and Social Sciences assessment regulations:
+
+**""Elective modules cannot be repeated.""**
+
+In contrast"
+T08,rag_forced,A_retrieval_necessary,yes,True,['bm25_search'],2,2,0,2,"The agent correctly identifies the minimum requirement of 18 ECTS Credits in the Informatik module group and accurately mentions that these come from Wahlpflicht (WP) and Wahl (W) modules, matching all key facts from the gold answer.","None detected - all specific claims about the 18 ECTS requirement, module types (W and WP), and their meanings are consistent with the gold answer and appear verifiable.","The minimum ECTS requirement in the Informatik (Computer Science) module group for the CL bachelor major (120) is **18 ECTS Credits**.
+
+According to the official study plan (Studienplan) for the Bache"
+T09,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],1,1,0,NA,"The agent correctly includes the key deadlines (Dec 1 for HS, June 1 for FS), the requirement to agree on topic before booking, and the failed consequence for missing deadline, but omits the important 15 ECTS requirement and the 'graded' specification from the gold answer.",None detected,"**Bachelor Thesis Deadline Rule – Student-Friendly Version**
+
+Your bachelor thesis must be submitted to your supervisor by:
+- **December 1st** if you're writing it during the Fall Semester, OR
+- **Jun"
+T10,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],2,2,0,NA,"The agent correctly extracted all minimum ECTS requirements per module group as they would appear in a typical Studienplan structure, including specific credit amounts and the requirement for 'sämtliche Pflichtmodule' where applicable.",None detected,"Based on the retrieved text (Major 120 Studienplan), the minimum ECTS requirements per module group are:
+
+• **Einführung in die Computerlinguistik:** sämtliche Pflichtmodule
+• **Wissenschaftliche Vert"
+T11,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],1,2,0,NA,"The checklist covers all 5 types of plagiarism (full text, partial text, unclear attribution, self-plagiarism, and translations) in student-friendly language, derived only from the provided text as required.",None detected,"## Plagiarism Checklist for Students
+
+Based on the plagiarism definition provided, here is a checklist to help you avoid plagiarism:
+
+**Before submitting your work, check:**
+
+☐ **No Full Text Plagiari"
+T12,rag_forced,C_ambiguous,yes,True,['bm25_search'],1,2,0,2,"The agent correctly states that no citation is needed for corrective use of ChatGPT for grammar and idiom improvements, matching the gold answer's core message and directly quoting the relevant guideline.",None detected - all specific claims about citation requirements and conditions are supported by the gold answer and represent reasonable elaborations of the guidelines.,"No, the student does not need to cite ChatGPT if it was used only for grammar correction and idiom improvement.
+
+According to the **Guidelines on the Use of Text Generation Models for Seminar Papers a"
+T13,rag_forced,C_ambiguous,yes,True,['bm25_search'],2,2,0,2,"The agent correctly identifies that the withdrawal request will likely be rejected due to missing the 5 working day deadline, and that reasons for absence cannot be claimed after the deadline, with the implicit consequence that the module will be failed.",None detected - all specific claims about the 5 working day deadline and exclusion of late submissions are accurate and supported by the gold answer.,"The student's withdrawal request will **likely be rejected** because the doctor's certificate was submitted too late.
+
+According to the Faculty of Arts and Social Sciences regulations:
+
+**Key deadline"
+T14,rag_forced,C_ambiguous,yes,True,['bm25_search'],4,2,0,1,"The agent correctly states that compulsory modules will not be lost when switching from CL major to minor, mentions the incompatibility constraint, and covers all key facts from the gold answer.","None detected. The mentions of recognition agreements and mobility coordinators are reasonable procedural details that don't contradict the gold answer, even if not explicitly stated in it.","**No, the student will not lose the compulsory modules they have already completed.**
+
+According to the study regulations, compulsory modules (Pflichtmodule) completed in the CL Major can be recognize"
+T15,rag_forced,D_adversarial,no,True,['bm25_search'],1,2,0,NA,"The agent correctly states that the bachelor thesis is graded ('benotet'), which fully aligns with the gold answer.",None detected,"Ja, die Bachelorarbeit ist ein benotetes Pflichtmodul."
+N16,rag_forced,D_adversarial,no,True,['bm25_search'],1,2,0,NA,The agent's answer correctly states both deadlines (December 1st for fall/autumn semester and June 1st for spring semester) matching all key facts from the gold answer.,None detected,The bachelor thesis must be submitted to the supervisor no later than December 1st in the fall semester or June 1st in the spring semester.
+N17,rag_forced,D_adversarial,no,True,['bm25_search'],1,2,0,NA,"The answer correctly conveys both key facts: booking equals binding registration for the exam, and not showing up without deregistering results in an automatic fail with grade 1 or 'nicht bestanden'.",None detected,"Here's a simpler version for a first-year student:
+
+**When you book a module, you're officially signing up for both the module and its assessment (exam, paper, etc.). If you don't show up for the asse"
+N18,rag_forced,D_adversarial,no,True,['bm25_search'],1,2,0,NA,"The agent correctly identifies all three ECTS-related values from the gold answer: 60 ECTS total, 18 ECTS for Kernbereich, and 30% graded requirement.",None detected,"Based on the provided text, here are all ECTS values mentioned as bullet points:
+
+• 60 ECTS Credits (total requirement for Minor 60)
+• 18 ECTS Credits (minimum for Kernbereich Computerlinguistik und S"
+N19,rag_forced,D_adversarial,no,True,['bm25_search'],1,2,0,NA,"The agent correctly answers 'Yes' and accurately explains that missing the bachelor thesis deadline results in a failed attempt, which fully aligns with the gold answer.",None detected,"Yes. According to the retrieved text, missing the bachelor thesis deadline results in a failed attempt. The document states: ""Können Sie die Abgabefrist für Ihre Bachelorarbeit nicht einhalten, gilt d"
+N20,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],1,2,0,NA,The agent's answer fully captures all key facts from the gold answer: students must agree on the thesis topic with their supervisor and must have explicit supervisor approval before booking the module.,None detected,"Based on the provided passage, before booking the bachelor thesis module, a student should:
+
+1. **Agree on the thesis topic with the supervisor** — ""Vor der Buchung des Moduls ist mit der Betreuerin b"
+N21,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],1,2,0,NA,"Both key facts from the gold answer are present: (1) plagiarism as reproducing text without attribution, and (2) format irrelevance (print or online), with no additional forms added.",None detected,"Based on the retrieved plagiarism definition, here are two short bullet points:
+
+• **Plagiarism is the reproduction of a text section without source attribution**, regardless of the original form (pri"
+N22,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],1,2,0,NA,The agent correctly states that grammar correction does not require citation and provides the direct answer supported by the quoted guideline text.,None detected,"No, grammar correction with a text generation model does not require citation.
+
+According to the Guidelines on the Use of Text Generation Models for Seminar Papers and Theses: ""If text generation mode"
+N23,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],2,2,0,NA,"All three key facts from the gold answer are accurately present: booking modules on time in the student portal, using the official booking tool within deadlines, and that registration with lecturers or OLAT is not valid.",None detected,"## Modulbuchungs-Checkliste
+
+**Schritt 1:** Buchen Sie Ihre Module fristgerecht im Studierendenportal.
+
+**Schritt 2:** Buchen Sie immer über das offizielle Buchungstool und innerhalb der Fristen.
+
+**S"
+N24,rag_forced,B_retrieval_unnecessary,no,True,['bm25_search'],2,2,0,NA,"The agent provided exactly 8 module names in a clean list format without any additional information like ECTS values or descriptions, fully matching the gold answer's requirements.",None detected,"1. Programming in Language Technology 1
+2. Programming in Language Technology 2
+3. Introduction to Language Technology
+4. Machine Learning for Language Technology
+5. Math. Foundations for Language Tec"
+N25,rag_forced,D_adversarial,no,True,['bm25_search'],1,1,1,NA,"The agent correctly states that passed compulsory modules cannot be repeated, but incorrectly claims failed elective modules cannot be repeated at all, when the gold answer indicates failing an elective has no consequences.",The claim that failed elective modules 'cannot be repeated at all' contradicts the gold answer stating that failing an elective has no consequences.,"Compulsory modules that have been passed cannot be repeated, while elective modules that have been failed cannot be repeated at all."
