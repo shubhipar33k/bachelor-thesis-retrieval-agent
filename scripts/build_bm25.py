@@ -1,3 +1,24 @@
+"""
+build_bm25.py
+=============
+ 
+Build a BM25 (Okapi) index over the preprocessed corpus chunks.
+ 
+Loads chunks from `data/chunks_v1.jsonl`, tokenises each chunk with a
+simple lowercase-and-strip-punctuation tokeniser (which works for both
+German and English without language-specific stemming), and builds a
+BM25Okapi index from the `rank-bm25` library.
+ 
+The index and the chunk metadata are pickled together to
+`data/bm25_index.pkl` so the retrieval tool can load both at once.
+ 
+After building, the script runs a handful of spot-check queries against
+known benchmark tasks to verify the index returns reasonable results.
+ 
+Run:
+    python build_bm25.py
+"""
+
 from __future__ import annotations
 
 import json
@@ -23,9 +44,13 @@ def load_chunks(path: Path) -> list[dict]:
 
 def tokenize(text: str) -> list[str]:
     """
-    Simple whitespace + punctuation tokenizer.
-    Lowercases and removes punctuation.
-    Works for both German and English.
+    Simple whitespace + punctuation tokeniser.
+ 
+    Lowercases the text and replaces punctuation with whitespace. No
+    language-specific stemming is applied, which means German compound
+    words and English plurals are treated as distinct tokens. This is
+    acceptable for a corpus where exact terminology matters more than
+    morphological matching.
     """
     text = text.lower()
     text = re.sub(r"[^\w\s]", " ", text)
@@ -34,12 +59,14 @@ def tokenize(text: str) -> list[str]:
 
 
 def build_bm25_index(chunks: list[dict]) -> BM25Okapi:
+    """Build a BM25Okapi index from a list of chunks."""
     tokenized_corpus = [tokenize(chunk["text"]) for chunk in chunks]
     index = BM25Okapi(tokenized_corpus)
     return index
 
 
 def save_index(index: BM25Okapi, chunks: list[dict], path: Path) -> None:
+    """Pickle the index and chunks together for later loading."""
     payload = {
         "index": index,
         "chunks": chunks,
@@ -76,26 +103,27 @@ def main() -> None:
 
     save_index(index, chunks, BM25_INDEX_FILE)
 
-    # ── Manual spot checks against your benchmark tasks ──────────────────────
+    # Spot-check queries against known benchmark tasks. Each query targets
+    # a specific task to verify the index returns the expected document.
     print("\n" + "="*60)
     print("SPOT CHECK QUERIES")
     print("="*60)
 
-    # T01 — should find Leistungsnachweise: Bachelorarbeit, 15 ECTS
+    # T01: expected to retrieve Leistungsnachweise (Bachelorarbeit, 15 ECTS)
     test_query(index, chunks, "Bachelorarbeit Kreditpunkte benotet")
-
-    # T02 — should find deadline + Fehlversuch
+ 
+    # T02: expected to retrieve deadline + Fehlversuch passage
     test_query(index, chunks, "Abgabefrist Bachelorarbeit nicht bestanden Fehlversuch")
-
-    # T06 — should find Assessments: withdrawal illness 5 days
+ 
+    # T06: expected to retrieve Assessments (withdrawal illness 5 days)
     test_query(index, chunks, "withdrawal illness five working days assessment")
-
-    # T07 — should find: elective modules cannot be repeated
+ 
+    # T07: expected to retrieve rule that elective modules cannot be repeated
     test_query(index, chunks, "elective modules cannot be repeated Wahlmodul")
-
-    # T08 — should find ASTO 120: Informatik 18 ECTS
+ 
+    # T08: expected to retrieve ASTO 120 Informatik 18 ECTS rule
     test_query(index, chunks, "Informatik ECTS Credits Wahlpflicht")
-
+    
 
 if __name__ == "__main__":
     main()
