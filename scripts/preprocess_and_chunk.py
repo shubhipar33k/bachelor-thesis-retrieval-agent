@@ -1,3 +1,30 @@
+"""
+preprocess_and_chunk.py
+=======================
+ 
+PDF preprocessing and chunking for the thesis corpus.
+ 
+This script extracts text from all PDF files in `corpus_v1/`, cleans the
+text, splits it into paragraphs, and chunks paragraphs into overlapping
+windows of approximately 300 words each.
+ 
+Pipeline:
+    1. Extract raw text from each PDF using PyMuPDF.
+    2. Clean whitespace and remove page-number artefacts (e.g. "Seite 3/12").
+    3. Split into paragraphs (double-newline first, fall back to single-newline
+       for documents with poor paragraph structure).
+    4. Combine paragraphs into chunks of ~300 words with 50-word overlap.
+    5. Detect chunk language (German / English / unknown) with a simple
+       word-frequency heuristic.
+    6. Save all chunks to `data/chunks_v1.jsonl`.
+ 
+Each output record contains: doc_id, chunk_id, source_file, text, language,
+and word_count.
+ 
+Run:
+    python preprocess_and_chunk.py
+"""
+
 from __future__ import annotations
 
 import json
@@ -8,6 +35,11 @@ from typing import Iterable
 import fitz  # PyMuPDF
 
 
+# Chunking parameters: 300-word target keeps chunks semantically coherent
+# while staying within the embedding model's context window. 50-word overlap
+# ensures sentences spanning chunk boundaries are represented in both adjacent
+# chunks.
+
 CORPUS_DIR = Path("corpus_v1")
 OUTPUT_DIR = Path("data")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -16,7 +48,7 @@ OUTPUT_FILE = OUTPUT_DIR / "chunks_v1.jsonl"
 
 TARGET_WORDS = 300
 OVERLAP_WORDS = 50
-MIN_CHUNK_WORDS = 80
+MIN_CHUNK_WORDS = 80 # Drop tiny trailing chunks below this threshold
 
 
 def extract_pdf_text(pdf_path: Path) -> str:
@@ -32,7 +64,15 @@ def extract_pdf_text(pdf_path: Path) -> str:
 
 
 def clean_text(text: str) -> str:
-    """Light cleaning for extracted text."""
+    """
+    Light cleaning for extracted PDF text.
+ 
+    Normalises whitespace and line endings, collapses multi-newlines, and
+    removes common page-footer artefacts that PyMuPDF leaves behind:
+        - "Seite 3 / 12"   (German page markers)
+        - "3 | 12"          (Page X of Y patterns)
+    Also fixes stray whitespace before punctuation.
+    """
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
@@ -45,11 +85,12 @@ def clean_text(text: str) -> str:
 def split_into_paragraphs(text: str) -> list[str]:
     """
     Split cleaned text into paragraphs.
-    First tries double-newline splitting.
-    If that produces very few or very large paragraphs,
-    falls back to single-newline splitting.
+ 
+    Prefers double-newline splitting since most well-formatted PDFs preserve
+    paragraph boundaries this way. Falls back to single-newline splitting
+    when the document has very few or unusually large paragraphs, which
+    happens with PDFs where extraction collapses spacing.
     """
-    # Try double-newline split first
     paragraphs = [p.strip() for p in text.split("\n\n")]
     paragraphs = [p for p in paragraphs if len(p.split()) >= 5]
 
@@ -73,8 +114,13 @@ def chunk_paragraphs(
     min_chunk_words: int = MIN_CHUNK_WORDS,
 ) -> list[str]:
     """
-    Chunk text by combining paragraphs up to a target size.
-    Overlap is approximate and word-based.
+    Combine paragraphs into chunks of approximately `target_words` size.
+ 
+    Paragraphs are accumulated into the current chunk until adding the next
+    one would exceed the target. The chunk is then closed and the next chunk
+    begins with a `overlap_words`-word tail from the previous chunk for
+    context continuity. Paragraphs that individually exceed the target are
+    further split by sentence.
     """
     chunks: list[str] = []
     current: list[str] = []
@@ -113,7 +159,7 @@ def chunk_paragraphs(
                 if len(chunk_text.split()) >= min_chunk_words:
                     chunks.append(chunk_text)
             continue
-
+        # Normal case: keep accumulating paragraphs until the target is reached.
         if current_words + para_words <= target_words or not current:
             current.append(para)
             current_words += para_words
@@ -144,6 +190,15 @@ def get_overlap_text(text: str, overlap_words: int) -> str:
 
 
 def detect_language_very_rough(text: str) -> str:
+    """
+    Heuristic language detection based on common function words.
+ 
+    Counts occurrences of German vs. English stopword-like markers and
+    returns the language with the higher count. Returns "unknown" if neither
+    language clearly dominates. This is a rough heuristic, not a proper
+    language identification system, but it suffices for tagging chunks in
+    a small bilingual corpus.
+    """
     lower = text.lower()
     german_markers = [" und ", " der ", " die ", " das ", " mit ", " studium "]
     english_markers = [" the ", " and ", " with ", " study ", " student ", " use "]
@@ -157,6 +212,7 @@ def detect_language_very_rough(text: str) -> str:
 
 
 def iter_pdf_files(folder: Path) -> Iterable[Path]:
+    """Yield PDF files in `folder`, sorted alphabetically for reproducibility."""
     return sorted(folder.rglob("*.pdf"))
 
 
