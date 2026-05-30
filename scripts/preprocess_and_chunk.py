@@ -35,10 +35,8 @@ from typing import Iterable
 import fitz  # PyMuPDF
 
 
-# Chunking parameters: 300-word target keeps chunks semantically coherent
-# while staying within the embedding model's context window. 50-word overlap
-# ensures sentences spanning chunk boundaries are represented in both adjacent
-# chunks.
+# Chunking parameters: 300-word target keeps chunks semantically coherent while staying within the embedding model's context window. 
+# 50-word overlap ensures sentences spanning chunk boundaries are represented in both adjacent chunks.
 
 CORPUS_DIR = Path("corpus_v1")
 OUTPUT_DIR = Path("data")
@@ -65,7 +63,7 @@ def extract_pdf_text(pdf_path: Path) -> str:
 
 def clean_text(text: str) -> str:
     """
-    Light cleaning for extracted PDF text.
+    Cleaning for extracted PDF text.
  
     Normalises whitespace and line endings, collapses multi-newlines, and
     removes common page-footer artefacts that PyMuPDF leaves behind:
@@ -212,7 +210,6 @@ def detect_language_very_rough(text: str) -> str:
 
 
 def iter_pdf_files(folder: Path) -> Iterable[Path]:
-    """Yield PDF files in `folder`, sorted alphabetically for reproducibility."""
     return sorted(folder.rglob("*.pdf"))
 
 
