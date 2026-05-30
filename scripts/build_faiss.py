@@ -1,3 +1,27 @@
+"""
+build_faiss.py
+==============
+ 
+Builds a FAISS dense retrieval index over the preprocessed corpus chunks.
+ 
+Loads chunks from `data/chunks_v1.jsonl`, encodes each chunk using a
+multilingual sentence-transformer model (`paraphrase-multilingual-
+MiniLM-L12-v2`), and builds a FAISS inner-product index. Embeddings are
+L2-normalised before indexing so inner-product search is equivalent to
+cosine similarity.
+ 
+The multilingual model is chosen because the corpus mixes German and
+English documents; encoding both into a shared embedding space avoids
+the need for language detection or separate indices.
+ 
+The index, embeddings, chunks, and model name are pickled together to
+`data/faiss_index.pkl` so the retrieval tool can reload everything in
+one call.
+ 
+Run:
+    python build_faiss.py
+"""
+
 from __future__ import annotations
 
 import json
@@ -13,7 +37,8 @@ DATA_DIR = Path("data")
 CHUNKS_FILE = DATA_DIR / "chunks_v1.jsonl"
 FAISS_INDEX_FILE = DATA_DIR / "faiss_index.pkl"
 
-# Multilingual model — handles both German and English corpus
+# Multilingual model supporting 50+ languages within a single shared embedding space. 
+# Suitable for the bilingual (German/English) corpus.
 MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
@@ -30,8 +55,10 @@ def build_faiss_index(
     model: SentenceTransformer,
 ) -> faiss.IndexFlatIP:
     """
-    Encode all chunks and build a FAISS inner-product index.
-    Vectors are L2-normalized so inner product == cosine similarity.
+    Encodes all chunks and builds a FAISS inner-product index.
+ 
+    Embeddings are L2-normalised by the encoder, so inner product on the
+    resulting vectors is equivalent to cosine similarity.
     """
     print("Encoding chunks...")
     texts = [chunk["text"] for chunk in chunks]
@@ -56,8 +83,7 @@ def save_index(
     embeddings: np.ndarray,
     chunks: list[dict],
     model_name: str,
-    path: Path,
-) -> None:
+    path: Path,) -> None:
     payload = {
         "index": index,
         "embeddings": embeddings,
@@ -74,8 +100,8 @@ def test_query(
     chunks: list[dict],
     model: SentenceTransformer,
     query: str,
-    top_k: int = 3,
-) -> None:
+    top_k: int = 3,) -> None:
+    """Prints the top-k FAISS results for a query (used for spot checks)."""
     query_embedding = model.encode(
         [query],
         convert_to_numpy=True,
@@ -107,28 +133,30 @@ def main() -> None:
     index, embeddings = build_faiss_index(chunks, model)
     save_index(index, embeddings, chunks, MODEL_NAME, FAISS_INDEX_FILE)
 
-    # ── Spot checks: same queries as BM25 for direct comparison ──────────────
+    # Spot-check queries. These are paraphrased versions of the BM25 spot
+    # checks, designed to test that FAISS retrieves correct chunks even
+    # when query wording does not match the source document.
     print("\n" + "="*60)
     print("SPOT CHECK QUERIES — compare results to BM25")
     print("="*60)
-
-    # T01 — 15 ECTS, graded — paraphrased to test semantic matching
+    
+    # T01: 15 ECTS, graded, paraphrased to test semantic matching
     test_query(index, chunks, model,
         "How many credits is the bachelor thesis and is it graded?")
-
-    # T02 — deadline consequence — paraphrased
+ 
+    # T02: deadline consequence, paraphrased
     test_query(index, chunks, model,
         "What happens if a student submits the bachelor thesis too late?")
-
-    # T06 — withdrawal illness — this failed in BM25
+ 
+    # T06: withdrawal illness; BM25 struggled here due to lexical mismatch
     test_query(index, chunks, model,
         "A student is sick and cannot attend their exam. What should they do?")
-
-    # T12 — grammar correction with AI — ambiguous task
+ 
+    # T12: grammar correction with AI; ambiguous task
     test_query(index, chunks, model,
         "Does using ChatGPT to fix grammar in a thesis require a citation?")
-
-    # T14 — major to minor switch — multi-document ambiguous task
+ 
+    # T14: major to minor switch; multi-document ambiguous task
     test_query(index, chunks, model,
         "Can a student switch from the CL major to the CL minor without losing credits?")
 
