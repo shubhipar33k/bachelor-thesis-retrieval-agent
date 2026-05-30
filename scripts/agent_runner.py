@@ -1,3 +1,27 @@
+"""
+Run the tool-calling agent across the benchmark under the chosen condition.
+ 
+Loads benchmark tasks from 'tasks/benchmark_tasks_v2.csv', instantiates a
+smolagents ToolCallingAgent configured for one of three conditions
+(no_rag, rag_opt, rag_forced), executes each task, and writes a detailed
+log entry to 'logs/run_<run_id>_<condition>.jsonl'.
+ 
+Each log entry records the task, the prompt sent to the agent, the agent's
+final answer, every tool call the agent made (including the queries it
+issued), and any error encountered.
+ 
+Usage:
+    # Run all three conditions on the full benchmark
+    python agent_runner.py --condition all --run-id full_run_01
+ 
+    # Run a single condition
+    python agent_runner.py --condition rag_opt
+ 
+    # Run a specific task subset
+    python agent_runner.py --condition rag_opt --tasks T01 T05 T14
+
+"""
+
 from __future__ import annotations
 
 import json
@@ -23,6 +47,10 @@ def load_system_prompt() -> str:
 
 
 def get_model(provider: str = "anthropic"):
+    """
+    Return a smolagents model instance for the chosen provider.
+    Reads API credentials from environment variables loaded via .env.
+    """
     if provider == "anthropic":
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
@@ -43,6 +71,13 @@ def get_model(provider: str = "anthropic"):
 
 
 def build_agent(condition: str, model) -> ToolCallingAgent:
+    """
+    Build a ToolCallingAgent for the given experimental condition.
+ 
+    no_rag      : agent is initialised with no retrieval tools
+    rag_opt     : both BM25 and FAISS tools are registered
+    rag_forced  : both tools are registered (the BM25 instruction is added at the prompt level in build_prompt, not here)
+    """
     tools = [] if condition == "no_rag" else [BM25SearchTool(), FAISSSearchTool()]
     agent = ToolCallingAgent(tools=tools, model=model, max_steps=5)
     agent.prompt_templates["system_prompt"] = load_system_prompt()
@@ -50,6 +85,12 @@ def build_agent(condition: str, model) -> ToolCallingAgent:
 
 
 def build_prompt(task: dict, condition: str) -> str:
+    """
+    Build the user prompt for a single task under a given condition.
+ 
+    Combines the task question with the optional prompt excerpt (for Groups B and D). 
+    Under the rag_forced condition, prepends an explicit instruction to call bm25_search before answering.
+    """
     question = task["question"]
     excerpt = task.get("prompt_text", "").strip()
     if excerpt and excerpt != "[NO EXCERPT — agent must retrieve]":
@@ -66,9 +107,11 @@ def build_prompt(task: dict, condition: str) -> str:
 
 def extract_tool_calls(agent: ToolCallingAgent, debug: bool = False) -> list[dict]:
     """
-    Extract tool calls from agent.memory.steps.
-    smolagents 1.24 stores steps in agent.memory, not agent.logs.
-    Each ActionStep has a tool_calls list of ToolCall objects.
+    Extract tool calls from the agent's memory after a run.
+ 
+    smolagents 1.24 stores execution steps in 'agent.memory.steps'. 
+    Each ActionStep has a 'tool_calls' list of ToolCall objects with 'name' and 'arguments' attributes. 
+    The 'final_answer' call (which submits the agent's response) is excluded because it is not a retrieval call.
     """
     tool_calls = []
     try:
@@ -95,7 +138,7 @@ def extract_tool_calls(agent: ToolCallingAgent, debug: bool = False) -> list[dic
                     except Exception:
                         args = {}
                 query = args.get("query", "") if isinstance(args, dict) else ""
-                # Exclude final_answer — that's not a retrieval call
+                # Exclude final_answer cause its not a retrieval call
                 if name and name != "final_answer":
                     tool_calls.append({"tool": name, "query": query})
 
@@ -109,6 +152,7 @@ def run_task(
     run_id: str,
     debug: bool = False,
 ) -> dict:
+    """Execute a single task and return a complete log record."""
     prompt = build_prompt(task, condition)
     try:
         answer = agent.run(prompt)
@@ -133,6 +177,7 @@ def run_task(
 
 
 def load_tasks(path: Path) -> list[dict]:
+    """Load benchmark tasks from a CSV file."""
     import csv
     with path.open(encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -154,6 +199,7 @@ def run_condition(condition, tasks, model, run_id, task_ids=None, debug=False):
 
 
 def save_logs(logs, condition, run_id):
+    """Write run logs to a JSONL file in the logs directory."""
     filename = LOGS_DIR / f"run_{run_id}_{condition}.jsonl"
     with filename.open("w", encoding="utf-8") as f:
         for entry in logs:
