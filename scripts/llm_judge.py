@@ -1,3 +1,23 @@
+"""
+Evaluate agent responses using Claude Sonnet 4.5 as an LLM judge.
+ 
+Loads the run logs produced by 'agent_runner.py' for each of the three
+conditions, sends each (question, gold answer, agent answer) triple to
+the judge model, and parses a structured JSON response containing
+correctness, hallucination, and grounding scores.
+ 
+Methodology note: a different and stronger model (Sonnet 4.5) is used as
+the judge than the model that produced the agent responses (Haiku 4.5).
+This avoids self-evaluation bias.
+ 
+Outputs:
+    data/llm_judge_results.jsonl  - one JSON record per (task, condition)
+    data/llm_judge_results.csv    - same data in CSV form for analysis
+ 
+Run:
+    python llm_judge.py
+"""
+
 from __future__ import annotations
 
 import csv
@@ -14,14 +34,16 @@ LOGS_DIR = Path("logs")
 OUTPUT_DIR = Path("data")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Conditions to judge
+# Final-run log files for each condition. 
+# These are the logs reported in the thesis results chapter. 
 CONDITIONS = {
     "no_rag":    "logs/run_full_run_01_no_rag.jsonl",
     "rag_opt":   "logs/run_full_run_01_rag_opt.jsonl",
     "rag_forced":"logs/run_full_run_01_rag_forced.jsonl",
 }
 
-JUDGE_MODEL = "claude-sonnet-4-5"  # different from haiku used in experiments
+# Judge model: deliberately different from the agent model (Haiku 4.5) to avoid self-evaluation bias.
+JUDGE_MODEL = "claude-sonnet-4-5" 
 
 
 JUDGE_SYSTEM = """You are an expert evaluator for a university student assistant system.
@@ -62,6 +84,7 @@ Respond in JSON only, with this exact format:
 
 
 def load_jsonl(path: str) -> list[dict]:
+    """Load records from a JSONL file."""
     rows = []
     with open(path) as f:
         for line in f:
@@ -72,6 +95,7 @@ def load_jsonl(path: str) -> list[dict]:
 
 
 def load_tasks(path: str) -> dict[str, dict]:
+    """Load benchmark tasks indexed by task_id."""
     with open(path) as f:
         return {row["task_id"]: row for row in csv.DictReader(f)}
 
@@ -84,6 +108,14 @@ def judge_answer(
     retrieval_required: str,
     task_id: str,
 ) -> dict:
+    """
+    Send one (question, gold, agent) triple to the judge model and parse
+    its JSON response.
+ 
+    If the judge returns malformed JSON, returns a sentinel dict with
+    -1 scores and a "parse error" reason so the caller can detect the
+    failure without crashing.
+    """
     user_msg = f"""Task ID: {task_id}
 Retrieval required: {retrieval_required}
 
@@ -107,8 +139,8 @@ Please score the agent's answer."""
 
     raw = response.content[0].text.strip()
     # Strip markdown code fences if present
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
+    if raw.startswith("'''"):
+        raw = raw.split("'''")[1]
         if raw.startswith("json"):
             raw = raw[4:]
     raw = raw.strip()
@@ -179,7 +211,7 @@ def main():
             all_results.append(result)
             print(f"correct={scores.get('correctness')} halluc={scores.get('hallucination')}")
 
-            # Be polite to the API — small delay
+            # Small delay between API calls to avoid rate limiting
             time.sleep(0.3)
 
     # Save full results
@@ -200,7 +232,7 @@ def main():
         mean_h = sum(r["judge_hallucination"] for r in valid if isinstance(r["judge_hallucination"], int)) / len(valid)
         print(f"{condition}: correctness={mean_c:.2f} hallucination_rate={mean_h:.2f} (n={len(valid)})")
 
-    # Save CSV for easy analysis
+    # Save CSV for analysis
     out_csv = OUTPUT_DIR / "llm_judge_results.csv"
     if all_results:
         with out_csv.open("w", newline="") as f:
