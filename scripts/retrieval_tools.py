@@ -1,3 +1,24 @@
+"""
+small description of script:
+ 
+BM25 and FAISS retrieval tools for the smolagents ToolCallingAgent.
+ 
+Each tool is implemented as a `smolagents.Tool` subclass with a name,
+description, and input schema. The descriptions are sent to the LLM as
+part of the function-calling specification, so they are written to help
+the agent decide when to use each tool.
+ 
+Tools:
+    BM25SearchTool   - keyword-based search for exact terminology
+    FAISSSearchTool  - dense semantic search for paraphrased queries
+ 
+Indices are loaded lazily and cached at module level, so the first call
+incurs a one-time loading cost and subsequent calls are fast.
+ 
+Run directly to test both tools on sample queries:
+    python retrieval_tools.py
+"""
+
 from __future__ import annotations
 
 import json
@@ -17,15 +38,16 @@ BM25_INDEX_FILE = DATA_DIR / "bm25_index.pkl"
 FAISS_INDEX_FILE = DATA_DIR / "faiss_index.pkl"
 
 
-# ── Shared tokenizer (must match build_bm25.py) ───────────────────────────────
+# Shared tokeniser. 
+# Must match the tokeniser used in build_bm25.py so that queries are tokenised the same way the corpus was.
 
 def tokenize(text: str) -> list[str]:
     text = text.lower()
     text = re.sub(r"[^\w\s]", " ", text)
     return text.split()
 
-
-# ── Index loaders (cached at module level so they load once) ──────────────────
+# Lazy module-level cache for indices. 
+# Loaded on first call to each tool and reused across subsequent calls in the same process.
 
 _bm25_payload: dict | None = None
 _faiss_payload: dict | None = None
@@ -33,6 +55,7 @@ _faiss_model: SentenceTransformer | None = None
 
 
 def _load_bm25() -> tuple[BM25Okapi, list[dict]]:
+    """Loads and caches the BM25 index and chunks from disk."""
     global _bm25_payload
     if _bm25_payload is None:
         with BM25_INDEX_FILE.open("rb") as f:
@@ -41,6 +64,7 @@ def _load_bm25() -> tuple[BM25Okapi, list[dict]]:
 
 
 def _load_faiss() -> tuple[faiss.IndexFlatIP, list[dict], SentenceTransformer]:
+    """Loads and caches the FAISS index, chunks, and embedding model."""
     global _faiss_payload, _faiss_model
     if _faiss_payload is None:
         with FAISS_INDEX_FILE.open("rb") as f:
@@ -51,7 +75,7 @@ def _load_faiss() -> tuple[faiss.IndexFlatIP, list[dict], SentenceTransformer]:
 
 
 def _format_results(results: list[dict]) -> str:
-    """Format retrieved chunks into a string the agent can read."""
+    """Formats retrieved chunks into a string the agent can read."""
     if not results:
         return "No relevant documents found."
     lines = []
@@ -66,9 +90,9 @@ def _format_results(results: list[dict]) -> str:
     return "\n".join(lines)
 
 
-# ── BM25 Tool ─────────────────────────────────────────────────────────────────
-
 class BM25SearchTool(Tool):
+    """BM25 keyword search over the corpus."""
+    
     name = "bm25_search"
     description = (
         "Search the university document corpus using BM25 keyword search. "
@@ -99,6 +123,7 @@ class BM25SearchTool(Tool):
 
         results = []
         for idx in top_indices:
+            # Drop zero-score results: they indicate no keyword overlap at all
             if scores[idx] > 0:
                 results.append({
                     "doc_id": chunks[idx]["doc_id"],
@@ -111,9 +136,9 @@ class BM25SearchTool(Tool):
         return _format_results(results)
 
 
-# ── FAISS Tool ────────────────────────────────────────────────────────────────
-
 class FAISSSearchTool(Tool):
+    """FAISS dense (semantic) search over the corpus."""
+    
     name = "faiss_search"
     description = (
         "Search the university document corpus using semantic (dense) search. "
@@ -158,9 +183,8 @@ class FAISSSearchTool(Tool):
         return _format_results(results)
 
 
-# ── Quick smoke test ──────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
+    # test: instantiate both tools and run one query each.
     print("Testing BM25 tool...")
     bm25_tool = BM25SearchTool()
     print(bm25_tool.forward("Bachelorarbeit Abgabefrist Fehlversuch"))
