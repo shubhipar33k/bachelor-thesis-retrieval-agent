@@ -2,7 +2,7 @@
 build_bm25.py
 =============
  
-Build a BM25 (Okapi) index over the preprocessed corpus chunks.
+Builds a BM25 (Okapi) index over the preprocessed corpus chunks.
  
 Loads chunks from `data/chunks_v1.jsonl`, tokenises each chunk with a
 simple lowercase-and-strip-punctuation tokeniser (which works for both
@@ -59,7 +59,7 @@ def tokenize(text: str) -> list[str]:
 
 
 def build_bm25_index(chunks: list[dict]) -> BM25Okapi:
-    """Build a BM25Okapi index from a list of chunks."""
+    """Builds a BM25Okapi index from a list of chunks."""
     tokenized_corpus = [tokenize(chunk["text"]) for chunk in chunks]
     index = BM25Okapi(tokenized_corpus)
     return index
@@ -103,8 +103,8 @@ def main() -> None:
 
     save_index(index, chunks, BM25_INDEX_FILE)
 
-    # Spot-check queries against known benchmark tasks. Each query targets
-    # a specific task to verify the index returns the expected document.
+    # Spot-checks queries against known benchmark tasks. 
+    # Each query targets a specific task to verify the index returns the expected document.
     print("\n" + "="*60)
     print("SPOT CHECK QUERIES")
     print("="*60)
