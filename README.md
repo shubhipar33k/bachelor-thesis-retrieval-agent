@@ -9,7 +9,7 @@ The project investigates whether a general instruction-tuned LLM agent can relia
 ## Repository Structure
 
 ```
-thesis_project/
+bachelor-thesis-retrieval-agent/
 ├── corpus_v1/              # 11 source PDF documents (study regulations)
 ├── data/                   # Processed chunks and retrieval indices
 │   ├── chunks_v1.jsonl     # 46 chunks extracted from the corpus
@@ -41,8 +41,8 @@ thesis_project/
 ### Installation
 
 ```bash
-git clone https://github.com/shubhipar33k/thesis_project.git
-cd thesis_project
+git clone https://github.com/shubhipar33k/bachelor-thesis-retrieval-agent.git
+cd bachelor-thesis-retrieval-agent
 pip install -r requirements.txt
 ```
 
