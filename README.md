@@ -1,4 +1,4 @@
-# Thesis: Evaluating Retrieval Decisions in Multi-Step LLM Agents
+# Thesis: Evaluating Retrieval Decisions in Tool-Calling LLM Agents
 
 This repository contains the code, corpus, benchmark, and experimental logs for the bachelor thesis *Evaluating Retrieval Decisions in Multi-Step LLM Agents* by Shubhi Pareek, submitted to the Department of Computational Linguistics, University of Zurich (June 2026).
 
